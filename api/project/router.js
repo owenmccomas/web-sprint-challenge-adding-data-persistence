@@ -1,24 +1,34 @@
-const express = require('express')
-const router = express.Router()
-const Project = require('./model')
+const router = require('express').Router()
 
 
-router.get('/', (req, res, next) => {
-    Project.find()
-      .then(projects => {
-        res.json(projects)
-      })
-      .catch(next)
-  })
+const Projects = require('../project/model')
 
-router.post('/', (req, res, next) => {
-    const project = req.body
-    console.log(project)
-    Project.create(project)
-      .then(project => {
-        res.status(201).json(project)
-      })
-      .catch(next)
-  })
+router.get('/', (req,res,next) => {
+    Projects.find()
+        .then(projects => {
+            res.status(200).json(isFalse(projects));
+        })
+        .catch(err => {
+            next(err)
+        })
+})
+
+router.post('/', (req, res,next) => {
+    Projects.create(req.body)
+    .then((project) => {
+        res.status(201).json(isFalse(project)[0])
+    })
+    .catch(error => {
+    next(error)
+    })
+})
+
+
+const isFalse = (projects) => {
+	return projects.map((project) => ({
+		...project,
+		project_completed: project.project_completed ? true : false,
+	}));
+};
 
 module.exports = router

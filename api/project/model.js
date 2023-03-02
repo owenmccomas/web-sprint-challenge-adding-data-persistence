@@ -14,7 +14,6 @@ async function create(project) {
         .then(([project_id]) => {
             return findById([project_id])
         })
-
 }
 
 module.exports = {
